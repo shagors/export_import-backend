@@ -54,6 +54,15 @@ app.post("/office_accounts", (req, res) => {
   });
 });
 
+// office accounts data get from server to frontend
+app.get("/office_accounts", (req, res) => {
+  const sql = "SELECT * FROM office_accounts";
+  db.query(sql, (err, result) => {
+    if (err) return res.json({ Message: "Error inside server" });
+    return res.json(result);
+  });
+});
+
 // transport route post to server from frontend - api
 app.post("/transport", (req, res) => {
   const sql =
