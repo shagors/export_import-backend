@@ -13,14 +13,7 @@ const db = mysql.createConnection({
   database: "export_import",
 });
 
-app.get("/products", (req, res) => {
-  const sql = "SELECT * FROM products";
-  db.query(sql, (err, result) => {
-    if (err) return res.json({ Message: "Error inside server" });
-    return res.json(result);
-  });
-});
-
+// product name post from frontend to server - api
 app.post("/products", (req, res) => {
   const sql =
     "INSERT INTO products (`productName`,`productBrand`,`productModel`) VALUES(?)";
@@ -35,6 +28,16 @@ app.post("/products", (req, res) => {
   });
 });
 
+// product get from server to frontend - api
+app.get("/products", (req, res) => {
+  const sql = "SELECT * FROM products";
+  db.query(sql, (err, result) => {
+    if (err) return res.json({ Message: "Error inside server" });
+    return res.json(result);
+  });
+});
+
+// data entry from accounts to server - api
 app.post("/office_accounts", (req, res) => {
   const sql =
     "INSERT INTO office_accounts (`productName`,`date`, `productBrand`,`productModel`, `productQuantity`) VALUES(?)";
@@ -45,6 +48,28 @@ app.post("/office_accounts", (req, res) => {
     req.body.productModel,
     req.body.productQuantity,
   ];
+  db.query(sql, [values], (err, result) => {
+    if (err) return res.json(err);
+    return res.json(result);
+  });
+});
+
+// transport route post to server from frontend - api
+app.post("/transport", (req, res) => {
+  const sql =
+    "INSERT INTO transport (`transportWay`,`transportCost`) VALUES(?)";
+  const values = [req.body.transportWay, req.body.transportCost];
+  db.query(sql, [values], (err, result) => {
+    if (err) return res.json(err);
+    return res.json(result);
+  });
+});
+
+//this api data collet from frontend sent to server
+app.post("/transport_country", (req, res) => {
+  const sql =
+    "INSERT INTO transport_country (`countryName`,`countryPort`) VALUES(?)";
+  const values = [req.body.countryName, req.body.countryPort];
   db.query(sql, [values], (err, result) => {
     if (err) return res.json(err);
     return res.json(result);
