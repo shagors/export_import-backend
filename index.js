@@ -37,7 +37,7 @@ app.get("/products", (req, res) => {
   });
 });
 
-// data entry from accounts to server - api
+// oofice accounts data entry from accounts to server - api
 app.post("/office_accounts", (req, res) => {
   const sql =
     "INSERT INTO office_accounts (`productName`,`date`, `productBrand`,`productModel`, `productQuantity`) VALUES(?)";
@@ -65,13 +65,31 @@ app.post("/transport", (req, res) => {
   });
 });
 
-//this api data collet from frontend sent to server
+// transport data get api from server to frontend show
+app.get("/transport", (req, res) => {
+  const sql = "SELECT * FROM transport";
+  db.query(sql, (err, result) => {
+    if (err) return res.json({ Message: "Error inside server" });
+    return res.json(result);
+  });
+});
+
+//transport country api data collet from frontend sent to server
 app.post("/transport_country", (req, res) => {
   const sql =
     "INSERT INTO transport_country (`countryName`,`countryPort`) VALUES(?)";
   const values = [req.body.countryName, req.body.countryPort];
   db.query(sql, [values], (err, result) => {
     if (err) return res.json(err);
+    return res.json(result);
+  });
+});
+
+// transport country api data collet from server sent to frontend
+app.get("/transport_country", (req, res) => {
+  const sql = "SELECT * FROM transport_country";
+  db.query(sql, (err, result) => {
+    if (err) return res.json({ Message: "Error inside server" });
     return res.json(result);
   });
 });
