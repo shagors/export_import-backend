@@ -13,6 +13,17 @@ const db = mysql.createConnection({
   database: "export_import",
 });
 
+// server connection test
+const pool = mysql.createPool(db);
+
+pool.getConnection((err, connection) => {
+  if (connection) {
+    console.log("Connected to DB");
+  } else {
+    console.error("Error connecting DB");
+  }
+});
+
 // product name post from frontend to server - api
 app.post("/products", (req, res) => {
   const sql =
@@ -94,11 +105,22 @@ app.post("/transport_country", (req, res) => {
   });
 });
 
-// transport country api data collet from server sent to frontend
+// transport country api data collect from server sent to frontend
 app.get("/transport_country", (req, res) => {
   const sql = "SELECT * FROM transport_country";
   db.query(sql, (err, result) => {
     if (err) return res.json({ Message: "Error inside server" });
+    return res.json(result);
+  });
+});
+
+// transport service api for data collect frontend to server
+app.post("/transport_service", (req, res) => {
+  const sql =
+    "INSERT INTO transport_service (`transportVehical`,`transportVehicalCost`) VALUES(?)";
+  const values = [req.body.transportVehical, req.body.transportVehicalCost];
+  db.query(sql, [values], (err, result) => {
+    if (err) return res.json(err);
     return res.json(result);
   });
 });
