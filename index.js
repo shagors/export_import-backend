@@ -14,14 +14,9 @@ const db = mysql.createConnection({
 });
 
 // server connection test
-const pool = mysql.createPool(db);
-
-pool.getConnection((err, connection) => {
-  if (connection) {
-    console.log("Connected to DB");
-  } else {
-    console.error("Error connecting DB");
-  }
+db.connect((err) => {
+  if (err) throw err.message("Something wrong in DB connection");
+  console.log("Connected with DB!");
 });
 
 // product name post from frontend to server - api
@@ -121,6 +116,34 @@ app.post("/transport_service", (req, res) => {
   const values = [req.body.transportVehical, req.body.transportVehicalCost];
   db.query(sql, [values], (err, result) => {
     if (err) return res.json(err);
+    return res.json(result);
+  });
+});
+
+// transport service api for data sent server to frontend
+app.get("/transport_service", (req, res) => {
+  const sql = "SELECT * FROM transport_service";
+  db.query(sql, (err, result) => {
+    if (err) return res.json({ Message: "Error inside server" });
+    return res.json(result);
+  });
+});
+
+// Charges type api for data get from frontend
+app.post("/addcharges", (req, res) => {
+  const sql = "INSERT INTO addcharges (`particularExpencessName`) VALUES(?)";
+  const values = [req.body.particularExpencessName];
+  db.query(sql, [values], (err, result) => {
+    if (err) return res.json(err);
+    return res.json(result);
+  });
+});
+
+// charges type api call from frontend and data send from server
+app.get("/addcharges", (req, res) => {
+  const sql = "SELECT * FROM addcharges";
+  db.query(sql, (err, result) => {
+    if (err) return res.json({ Message: "Error inside server" });
     return res.json(result);
   });
 });
