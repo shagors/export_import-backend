@@ -131,8 +131,12 @@ app.get("/transport_service", (req, res) => {
 
 // Charges type api for data get from frontend
 app.post("/addcharges", (req, res) => {
-  const sql = "INSERT INTO addcharges (`particularExpencessName`) VALUES(?)";
-  const values = [req.body.particularExpencessName];
+  const sql =
+    "INSERT INTO addcharges (`particularExpencessName`, `particularExpencessCost`) VALUES(?)";
+  const values = [
+    req.body.particularExpencessName,
+    req.body.particularExpencessCost,
+  ];
   db.query(sql, [values], (err, result) => {
     if (err) return res.json(err);
     return res.json(result);
@@ -145,6 +149,59 @@ app.get("/addcharges", (req, res) => {
   db.query(sql, (err, result) => {
     if (err) return res.json({ Message: "Error inside server" });
     return res.json(result);
+  });
+});
+
+// id with show data
+app.get("/addcharges/:id", (req, res) => {
+  const sql = "SELECT * FROM addcharges WHERE id =?";
+  const id = req.params.id;
+  db.query(sql, [id], (err, result) => {
+    if (err) return res.json({ Message: "Error inside server" });
+    return res.json(result);
+  });
+});
+
+// for delete data
+// app.delete("/delete/:id", (req, res) => {
+//   const sql = "DELETE FROM addcharges WHERE id = ?";
+//   const id = req.params.id;
+//   db.query(sql, [id], (err, result) => {
+//     if (err) return res.json({ Message: "Error inside server" });
+//     return res.json(result);
+// });
+
+// update charges methods
+app.put("/addcharges/:id", (req, res) => {
+  const id = req.params.id;
+  const values = [
+    req.body.particularExpencessName,
+    req.body.particularExpencessCost,
+  ];
+  const sql =
+    "UPDATE addcharges SET `particularExpencessName` = ? `particularExpencessCost` = ? where id = ?";
+  db.query(sql, [...values, id], (err, result) => {
+    if (err) return res.json(err);
+    return res.json({ id, particularExpencessName, particularExpencessCost });
+  });
+});
+
+// purchase
+app.post("/purchase", (req, res) => {
+  const sql =
+    "INSERT INTO purchase (`transportWay`,`transportCountryName`, `particularExpencessName`) VALUES(?)";
+  const values = [
+    req.body.transportWay,
+    req.body.transportCountryName,
+    req.body.particularExpencessName,
+  ];
+  db.query(sql, [values], (err, result) => {
+    if (err) {
+      console.error("Error inserting Data:", err);
+      res.status(500).send("Error inserting Data:");
+      return;
+    }
+    return res.status(200).send("Data inserted successfully", result);
   });
 });
 
