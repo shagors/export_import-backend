@@ -167,8 +167,8 @@ app.delete("/delete/:id", (req, res) => {
   const sql = "DELETE FROM addcharges WHERE id = ?";
   const id = req.params.id;
   db.query(sql, [id], (err, result) => {
-    if (err) return res.json({ Message: "Error inside server" });
-    return res.json(result);
+    if (err) return res.status(500).json({ Message: "Error inside server" });
+    return res.status(200).json(result);
   });
 });
 
@@ -180,10 +180,13 @@ app.put("/addcharges/:id", (req, res) => {
     req.body.particularExpencessCost,
   ];
   const sql =
-    "UPDATE addcharges SET `particularExpencessName` = ? `particularExpencessCost` = ? where id = ?";
+    "UPDATE addcharges SET particularExpencessName = ?, particularExpencessCost = ? WHERE id = ?";
   db.query(sql, [...values, id], (err, result) => {
-    if (err) return res.json(err);
-    return res.json({ id, particularExpencessName, particularExpencessCost });
+    if (err) {
+      res.status(500).json({ error: "Error updating user" });
+    } else {
+      res.status(200).json(result);
+    }
   });
 });
 
