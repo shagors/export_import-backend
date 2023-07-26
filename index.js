@@ -162,14 +162,15 @@ app.get("/addcharges/:id", (req, res) => {
   });
 });
 
-// for delete data
-// app.delete("/delete/:id", (req, res) => {
-//   const sql = "DELETE FROM addcharges WHERE id = ?";
-//   const id = req.params.id;
-//   db.query(sql, [id], (err, result) => {
-//     if (err) return res.json({ Message: "Error inside server" });
-//     return res.json(result);
-// });
+// for delete data charges api and also frontend
+app.delete("/delete/:id", (req, res) => {
+  const sql = "DELETE FROM addcharges WHERE id = ?";
+  const id = req.params.id;
+  db.query(sql, [id], (err, result) => {
+    if (err) return res.json({ Message: "Error inside server" });
+    return res.json(result);
+  });
+});
 
 // update charges methods
 app.put("/addcharges/:id", (req, res) => {
