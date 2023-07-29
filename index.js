@@ -9,6 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+const salt = 10;
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -24,21 +25,39 @@ db.connect((err) => {
 });
 
 // User create api front-end to backend
-app.post("/users", (req, res) => {
+app.post("/register", (req, res) => {
   const sql = "INSERT INTO users (`name`,`email`,`password`) VALUES(?)";
-  const values = [req.body.name, req.body.email, req.body.password];
-  db.query(sql, [values], (err, result) => {
-    if (err) return res.json(err);
-    return res.json(result);
+  bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
+    if (err) return res.json({ Error: "Error for hashing password" });
+    const values = [req.body.name, req.body.email, hash];
+    db.query(sql, [values], (err, result) => {
+      if (err) return res.json({ Error: "Data Inserting Failed" });
+      return res.json({ Status: "Success" });
+    });
   });
 });
 
 // user get from server and send to frontend
-app.get("/users", (req, res) => {
-  const sql = "SELECT * FROM users";
-  db.query(sql, (err, result) => {
-    if (err) return res.json({ Message: "Error inside server" });
-    return res.json(result);
+app.post("/login", (req, res) => {
+  const sql = "SELECT * FROM users WHERE email = ?";
+  db.query(sql, [req.body.email], (err, result) => {
+    if (err) return res.json({ Message: "Login error in server" });
+    if (result.length > 0) {
+      bcrypt.compare(
+        req.body.password.toString(),
+        result[0].password,
+        (err, response) => {
+          if (err) return res.json({ Message: "Password error" });
+          if (response) {
+            return res.json({ Status: "Success" });
+          } else {
+            return res.json({ Error: "Password not matched" });
+          }
+        }
+      );
+    } else {
+      return res.json({ Message: "No email found" });
+    }
   });
 });
 
