@@ -1,10 +1,14 @@
 import express from "express";
 import mysql from "mysql";
 import cors from "cors";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -19,7 +23,26 @@ db.connect((err) => {
   console.log("Connected with DB!");
 });
 
-// product name post from frontend to server - api
+// User create api front-end to backend
+app.post("/users", (req, res) => {
+  const sql = "INSERT INTO users (`name`,`email`,`password`) VALUES(?)";
+  const values = [req.body.name, req.body.email, req.body.password];
+  db.query(sql, [values], (err, result) => {
+    if (err) return res.json(err);
+    return res.json(result);
+  });
+});
+
+// user get from server and send to frontend
+app.get("/users", (req, res) => {
+  const sql = "SELECT * FROM users";
+  db.query(sql, (err, result) => {
+    if (err) return res.json({ Message: "Error inside server" });
+    return res.json(result);
+  });
+});
+
+// product name post from frontend to server - api --- 1
 app.post("/products", (req, res) => {
   const sql =
     "INSERT INTO products (`productName`,`productBrand`,`productModel`) VALUES(?)";
@@ -34,7 +57,7 @@ app.post("/products", (req, res) => {
   });
 });
 
-// product get from server to frontend - api
+// product get from server to frontend - api --- 2
 app.get("/products", (req, res) => {
   const sql = "SELECT * FROM products";
   db.query(sql, (err, result) => {
@@ -43,7 +66,7 @@ app.get("/products", (req, res) => {
   });
 });
 
-// oofice accounts data entry from accounts to server - api
+// oofice accounts data entry from accounts to server - api --- 3
 app.post("/office_accounts", (req, res) => {
   const sql =
     "INSERT INTO office_accounts (`productName`,`date`, `productBrand`,`productModel`, `productQuantity`) VALUES(?)";
@@ -60,7 +83,7 @@ app.post("/office_accounts", (req, res) => {
   });
 });
 
-// office accounts data get from server to frontend
+// office accounts data get from server to frontend --- 4
 app.get("/office_accounts", (req, res) => {
   const sql = "SELECT * FROM office_accounts";
   db.query(sql, (err, result) => {
@@ -69,7 +92,7 @@ app.get("/office_accounts", (req, res) => {
   });
 });
 
-// transport route post to server from frontend - api
+// transport route post to server from frontend - api --- 5
 app.post("/transport", (req, res) => {
   const sql =
     "INSERT INTO transport (`transportWay`,`transportCost`) VALUES(?)";
@@ -80,7 +103,7 @@ app.post("/transport", (req, res) => {
   });
 });
 
-// transport data get api from server to frontend show
+// transport data get api from server to frontend show --- 6
 app.get("/transport", (req, res) => {
   const sql = "SELECT * FROM transport";
   db.query(sql, (err, result) => {
@@ -89,7 +112,7 @@ app.get("/transport", (req, res) => {
   });
 });
 
-//transport country api data collet from frontend sent to server
+//transport country api data collet from frontend sent to server --- 7
 app.post("/transport_country", (req, res) => {
   const sql =
     "INSERT INTO transport_country (`countryName`,`countryPort`) VALUES(?)";
@@ -100,7 +123,7 @@ app.post("/transport_country", (req, res) => {
   });
 });
 
-// transport country api data collect from server sent to frontend
+// transport country api data collect from server sent to frontend --- 8
 app.get("/transport_country", (req, res) => {
   const sql = "SELECT * FROM transport_country";
   db.query(sql, (err, result) => {
@@ -109,7 +132,7 @@ app.get("/transport_country", (req, res) => {
   });
 });
 
-// transport service api for data collect frontend to server
+// transport service api for data collect frontend to server --- 9
 app.post("/transport_service", (req, res) => {
   const sql =
     "INSERT INTO transport_service (`transportVehical`,`transportVehicalCost`) VALUES(?)";
@@ -120,7 +143,7 @@ app.post("/transport_service", (req, res) => {
   });
 });
 
-// transport service api for data sent server to frontend
+// transport service api for data sent server to frontend --- 10
 app.get("/transport_service", (req, res) => {
   const sql = "SELECT * FROM transport_service";
   db.query(sql, (err, result) => {
@@ -129,7 +152,7 @@ app.get("/transport_service", (req, res) => {
   });
 });
 
-// Charges type api for data get from frontend
+// Charges type api for data get from frontend --- 11
 app.post("/addcharges", (req, res) => {
   const sql =
     "INSERT INTO addcharges (`particularExpencessName`, `particularExpencessCost`) VALUES(?)";
@@ -143,7 +166,7 @@ app.post("/addcharges", (req, res) => {
   });
 });
 
-// charges type api call from frontend and data send from server
+// charges type api call from frontend and data send from server --- 12
 app.get("/addcharges", (req, res) => {
   const sql = "SELECT * FROM addcharges";
   db.query(sql, (err, result) => {
@@ -152,7 +175,7 @@ app.get("/addcharges", (req, res) => {
   });
 });
 
-// id with show data
+// call id by charges data and show data show in update page  --- 13
 app.get("/addcharges/:id", (req, res) => {
   const sql = "SELECT * FROM addcharges WHERE id =?";
   const id = req.params.id;
@@ -162,7 +185,7 @@ app.get("/addcharges/:id", (req, res) => {
   });
 });
 
-// for delete data charges api and also frontend
+// for delete data charges api and also frontend --- 14
 app.delete("/delete/:id", (req, res) => {
   const sql = "DELETE FROM addcharges WHERE id = ?";
   const id = req.params.id;
@@ -172,7 +195,7 @@ app.delete("/delete/:id", (req, res) => {
   });
 });
 
-// update charges methods
+// update methods add for charges api --- 15
 app.put("/addcharges/:id", (req, res) => {
   const id = req.params.id;
   const values = [
@@ -190,7 +213,7 @@ app.put("/addcharges/:id", (req, res) => {
   });
 });
 
-// purchase
+// purchase data post to server from frontend --- 16
 app.post("/purchase", (req, res) => {
   const sql =
     "INSERT INTO purchase (`transportWay`,`transportCountryName`, `particularExpencessName`) VALUES(?)";
