@@ -235,19 +235,20 @@ app.put("/addcharges/:id", (req, res) => {
 // purchase data post to server from frontend --- 16
 app.post("/purchase", (req, res) => {
   const sql =
-    "INSERT INTO purchase (`transportWay`,`transportCountryName`, `particularExpencessName`) VALUES(?)";
+    "INSERT INTO purchase (`transportWay`,`transportCountryName`, `particularExpencessName`, `product`) VALUES(?)";
   const values = [
     req.body.transportWay,
     req.body.transportCountryName,
     req.body.particularExpencessName,
+    req.body.product,
   ];
   db.query(sql, [values], (err, result) => {
     if (err) {
       console.error("Error inserting Data:", err);
-      res.status(500).send("Error inserting Data:");
+      res.send("Error inserting Data:");
       return;
     }
-    return res.status(200).send("Data inserted successfully", result);
+    return res.send("Data inserted successfully", result);
   });
 });
 
