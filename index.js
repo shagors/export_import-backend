@@ -245,12 +245,14 @@ app.post("/purchase", (req, res) => {
   db.query(sql, [values], (err, result) => {
     if (err) {
       console.error("Error inserting Data:", err);
-      res.send("Error inserting Data:");
+      res.status(500).send("Error inserting Data:");
       return;
     }
-    return res.send("Data inserted successfully", result);
+    return res.status(200).send("Data inserted successfully", result);
   });
 });
+
+// purchase data get api for sent server to frontend
 
 app.listen(5001, () => {
   console.log("Listen from server");
