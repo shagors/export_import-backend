@@ -253,6 +253,13 @@ app.post("/purchase", (req, res) => {
 });
 
 // purchase data get api for sent server to frontend
+app.get("/purchase", (req, res) => {
+  const sql = "SELECT * FROM purchase";
+  db.query(sql, (err, result) => {
+    if (err) return res.json({ Message: "Error inside server" });
+    return res.json(result);
+  });
+});
 
 app.listen(5001, () => {
   console.log("Listen from server");
