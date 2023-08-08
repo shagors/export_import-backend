@@ -18,13 +18,13 @@ const db = mysql.createConnection({
   database: "export_import",
 });
 
-// server connection test
+// server connection test is it connected or not
 db.connect((err) => {
   if (err) throw err.message("Something wrong in DB connection");
   console.log("Connected with DB!");
 });
 
-// User create api front-end to backend
+// User create API - request comming from front-end to backend
 app.post("/register", (req, res) => {
   const sql = "INSERT INTO users (`name`,`email`,`password`) VALUES(?)";
   bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
@@ -37,7 +37,7 @@ app.post("/register", (req, res) => {
   });
 });
 
-// user get from server and send to frontend
+// user check API for login test from frontend to server request
 app.post("/login", (req, res) => {
   const sql = "SELECT * FROM users WHERE email = ?";
   db.query(sql, [req.body.email], (err, result) => {
@@ -61,7 +61,7 @@ app.post("/login", (req, res) => {
   });
 });
 
-// product name post from frontend to server - api --- 1
+// product name post from frontend to server - API --- 1
 app.post("/products", (req, res) => {
   const sql =
     "INSERT INTO products (`productName`,`productBrand`,`productModel`) VALUES(?)";
@@ -76,7 +76,7 @@ app.post("/products", (req, res) => {
   });
 });
 
-// product get from server to frontend - api --- 2
+// product get API from server to frontend - API --- 2
 app.get("/products", (req, res) => {
   const sql = "SELECT * FROM products";
   db.query(sql, (err, result) => {
@@ -85,7 +85,7 @@ app.get("/products", (req, res) => {
   });
 });
 
-// oofice accounts data entry from accounts to server - api --- 3
+// oofice accounts data entry from accounts to server - API --- 3
 app.post("/office_accounts", (req, res) => {
   const sql =
     "INSERT INTO office_accounts (`productName`,`date`, `productBrand`,`productModel`, `productQuantity`) VALUES(?)";
@@ -102,7 +102,7 @@ app.post("/office_accounts", (req, res) => {
   });
 });
 
-// office accounts data get from server to frontend --- 4
+// office accounts data get from server to frontend --- API--- 4
 app.get("/office_accounts", (req, res) => {
   const sql = "SELECT * FROM office_accounts";
   db.query(sql, (err, result) => {
@@ -111,7 +111,7 @@ app.get("/office_accounts", (req, res) => {
   });
 });
 
-// oofice accounts clone data entry from accounts to server - api --- 3
+// oofice accounts clone data entry from accounts to server - API --- 3
 app.post("/office_accounts_clone", (req, res) => {
   const sql =
     "INSERT INTO office_accounts_clone (`productName`,`date`, `productBrand`,`productModel`, `productQuantity`) VALUES(?)";
@@ -128,7 +128,7 @@ app.post("/office_accounts_clone", (req, res) => {
   });
 });
 
-// office accounts data get from server to frontend --- 4
+// office accounts data get from server to frontend --- API --- 4
 app.get("/office_accounts_clone", (req, res) => {
   const sql = "SELECT * FROM office_accounts_clone";
   db.query(sql, (err, result) => {
@@ -137,7 +137,7 @@ app.get("/office_accounts_clone", (req, res) => {
   });
 });
 
-// for delete data office_accounts_clone api and also frontend can delete data by id --- 14
+// for delete data office_accounts_clone API and also frontend can delete data by id --- 14
 app.delete("/office_accounts_clone/:id", (req, res) => {
   const sql = "DELETE FROM office_accounts_clone WHERE id = ?";
   const id = req.params.id;
@@ -147,7 +147,7 @@ app.delete("/office_accounts_clone/:id", (req, res) => {
   });
 });
 
-// transport route post to server from frontend - api --- 5
+// transport route post to server from frontend - API --- 5
 app.post("/transport", (req, res) => {
   const sql =
     "INSERT INTO transport (`transportWay`,`transportCost`) VALUES(?)";
@@ -158,7 +158,7 @@ app.post("/transport", (req, res) => {
   });
 });
 
-// transport data get api from server to frontend show --- 6
+// transport data get API from server to frontend show --- API -- 6
 app.get("/transport", (req, res) => {
   const sql = "SELECT * FROM transport";
   db.query(sql, (err, result) => {
@@ -167,7 +167,7 @@ app.get("/transport", (req, res) => {
   });
 });
 
-//transport country api data collet from frontend sent to server --- 7
+//transport country API data collet from frontend sent to server --- API --- 7
 app.post("/transport_country", (req, res) => {
   const sql =
     "INSERT INTO transport_country (`countryName`,`countryPort`) VALUES(?)";
@@ -178,7 +178,7 @@ app.post("/transport_country", (req, res) => {
   });
 });
 
-// transport country api data collect from server sent to frontend --- 8
+// transport country API data collect from server sent to frontend ---API--- 8
 app.get("/transport_country", (req, res) => {
   const sql = "SELECT * FROM transport_country";
   db.query(sql, (err, result) => {
@@ -187,7 +187,7 @@ app.get("/transport_country", (req, res) => {
   });
 });
 
-// transport service api for data collect frontend to server --- 9
+// transport service API for data collect frontend to server ---API--- 9
 app.post("/transport_service", (req, res) => {
   const sql =
     "INSERT INTO transport_service (`transportVehical`,`transportVehicalCost`) VALUES(?)";
@@ -198,7 +198,7 @@ app.post("/transport_service", (req, res) => {
   });
 });
 
-// transport service api for data sent server to frontend --- 10
+// transport service API for data sent server to frontend ---API--- 10
 app.get("/transport_service", (req, res) => {
   const sql = "SELECT * FROM transport_service";
   db.query(sql, (err, result) => {
@@ -207,7 +207,7 @@ app.get("/transport_service", (req, res) => {
   });
 });
 
-// Charges type api for data get from frontend --- 11
+// Charges type API for data get from frontend ---API--- 11
 app.post("/addcharges", (req, res) => {
   const sql =
     "INSERT INTO addcharges (`particularExpencessName`, `particularExpencessCost`) VALUES(?)";
@@ -221,7 +221,7 @@ app.post("/addcharges", (req, res) => {
   });
 });
 
-// charges type api call from frontend and data send from server --- 12
+// charges type API call from frontend and data send from server ---API--- 12
 app.get("/addcharges", (req, res) => {
   const sql = "SELECT * FROM addcharges";
   db.query(sql, (err, result) => {
@@ -230,7 +230,7 @@ app.get("/addcharges", (req, res) => {
   });
 });
 
-// call id by charges data and show data show in update page  --- 13
+// call id by charges data and show data show in update page  ---API--- 13
 app.get("/addcharges/:id", (req, res) => {
   const sql = "SELECT * FROM addcharges WHERE id =?";
   const id = req.params.id;
@@ -240,7 +240,7 @@ app.get("/addcharges/:id", (req, res) => {
   });
 });
 
-// for delete data charges api and also frontend --- 14
+// for delete data charges api and also frontend ---API-- 14
 app.delete("/delete/:id", (req, res) => {
   const sql = "DELETE FROM addcharges WHERE id = ?";
   const id = req.params.id;
@@ -251,7 +251,7 @@ app.delete("/delete/:id", (req, res) => {
   });
 });
 
-// update methods add for charges api --- 15
+// update methods add for charges api ---API--- 15
 app.put("/addcharges/:id", (req, res) => {
   const id = req.params.id;
   const values = [
@@ -269,7 +269,7 @@ app.put("/addcharges/:id", (req, res) => {
   });
 });
 
-// purchase data post to server from frontend --- 16
+// purchase data post to server from frontend ---API--- 16
 app.post("/purchase", (req, res) => {
   const sql =
     "INSERT INTO purchase (`transportWay`,`transportCountryName`, `particularExpencessName`, `product`) VALUES(?)";
@@ -289,7 +289,7 @@ app.post("/purchase", (req, res) => {
   });
 });
 
-// purchase data get api for sent server to frontend
+// purchase data get api for sent server to frontend ---- API --- 17
 app.get("/purchase", (req, res) => {
   const sql = "SELECT * FROM purchase";
   db.query(sql, (err, result) => {
