@@ -111,6 +111,42 @@ app.get("/office_accounts", (req, res) => {
   });
 });
 
+// oofice accounts clone data entry from accounts to server - api --- 3
+app.post("/office_accounts_clone", (req, res) => {
+  const sql =
+    "INSERT INTO office_accounts_clone (`productName`,`date`, `productBrand`,`productModel`, `productQuantity`) VALUES(?)";
+  const values = [
+    req.body.productName,
+    req.body.date,
+    req.body.productBrand,
+    req.body.productModel,
+    req.body.productQuantity,
+  ];
+  db.query(sql, [values], (err, result) => {
+    if (err) return res.json(err);
+    return res.json(result);
+  });
+});
+
+// office accounts data get from server to frontend --- 4
+app.get("/office_accounts_clone", (req, res) => {
+  const sql = "SELECT * FROM office_accounts_clone";
+  db.query(sql, (err, result) => {
+    if (err) return res.json({ Message: "Error inside server" });
+    return res.json(result);
+  });
+});
+
+// for delete data office_accounts_clone api and also frontend can delete data by id --- 14
+app.delete("/office_accounts_clone/:id", (req, res) => {
+  const sql = "DELETE FROM office_accounts_clone WHERE id = ?";
+  const id = req.params.id;
+  db.query(sql, [id], (err, result) => {
+    if (err) return res.status(500).json({ Message: "Error inside server" });
+    return res.status(200).json(result);
+  });
+});
+
 // transport route post to server from frontend - api --- 5
 app.post("/transport", (req, res) => {
   const sql =
@@ -208,6 +244,7 @@ app.get("/addcharges/:id", (req, res) => {
 app.delete("/delete/:id", (req, res) => {
   const sql = "DELETE FROM addcharges WHERE id = ?";
   const id = req.params.id;
+  console.log(id);
   db.query(sql, [id], (err, result) => {
     if (err) return res.status(500).json({ Message: "Error inside server" });
     return res.status(200).json(result);
