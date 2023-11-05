@@ -102,11 +102,54 @@ app.post("/office_accounts", (req, res) => {
   });
 });
 
+// oofice accounts data entry from accounts to server - API --- 3
+app.post("/office_accounts", (req, res) => {
+  const sql =
+    "INSERT INTO office_accounts (`productName`,`date`, `productBrand`,`productModel`, `productQuantity`) VALUES(?)";
+  const values = [
+    req.body.productName,
+    req.body.date,
+    req.body.productBrand,
+    req.body.productModel,
+    req.body.productQuantity,
+  ];
+  db.query(sql, [values], (err, result) => {
+    if (err) return res.json(err);
+    return res.json(result);
+  });
+});
+
+// this is my patch code for product quantity update
+app.patch("/office_accounts/:productModel", (req, res) => {
+  const productModel = req.params.productModel;
+  const productQuantity = req.body.productQuantity;
+
+  const sql =
+    "UPDATE office_accounts SET productQuantity = productQuantity - ? WHERE productModel = ?";
+  const values = [productQuantity, productModel];
+
+  db.query(sql, values, (err, result) => {
+    if (err) return res.json(err);
+    return res.json(result);
+  });
+});
+
 // office accounts data get from server to frontend --- API--- 4
 app.get("/office_accounts", (req, res) => {
   const sql = "SELECT * FROM office_accounts";
   db.query(sql, (err, result) => {
     if (err) return res.json({ Message: "Error inside server" });
+    return res.json(result);
+  });
+});
+
+// oofice accounts match test data entry from accounts to server - API --- 3
+app.post("/modelcalc", (req, res) => {
+  const sql =
+    "INSERT INTO modelcalc (`productModel`, `productQuantity`) VALUES(?)";
+  const values = [req.body.productModel, req.body.productQuantity];
+  db.query(sql, [values], (err, result) => {
+    if (err) return res.json(err);
     return res.json(result);
   });
 });
@@ -272,11 +315,11 @@ app.put("/addcharges/:id", (req, res) => {
 // purchase data post to server from frontend ---API--- 16
 app.post("/purchase", (req, res) => {
   const sql =
-    "INSERT INTO purchase (`transportWay`,`transportCountryName`, `particularExpencessName`, `product`) VALUES(?)";
+    "INSERT INTO purchase (`transportWay`,`transportCountryName`, `particularExpenseName`, `product`) VALUES(?)";
   const values = [
     req.body.transportWay,
     req.body.transportCountryName,
-    req.body.particularExpencessName,
+    req.body.particularExpenseName,
     req.body.product,
   ];
   db.query(sql, [values], (err, result) => {
@@ -295,6 +338,31 @@ app.get("/purchase", (req, res) => {
   db.query(sql, (err, result) => {
     if (err) return res.json({ Message: "Error inside server" });
     return res.json(result);
+  });
+});
+
+// Boxes List
+app.post("/palletbox", (req, res) => {
+  const sql =
+    "INSERT INTO palletbox (`productName`,`productModel`, `quantity`, `splitProductsBox`,`splitQuantitySingleProduct`,`productPerBox`,`totalBox`,`totalPallet`,`truckNumber`) VALUES(?)";
+  const values = [
+    req.body.productName,
+    req.body.productModel,
+    req.body.quantity,
+    req.body.splitProductsBox,
+    req.body.splitQuantitySingleProduct,
+    req.body.productPerBox,
+    req.body.totalBox,
+    req.body.totalPallet,
+    req.body.truckNumber,
+  ];
+  db.query(sql, [values], (err, result) => {
+    if (err) {
+      console.error("Error inserting Data:", err);
+      res.status(500).send("Error inserting Data:");
+      return;
+    }
+    return res.status(200).send("Data inserted successfully", result);
   });
 });
 
